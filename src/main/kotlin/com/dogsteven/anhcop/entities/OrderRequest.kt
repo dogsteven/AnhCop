@@ -5,6 +5,7 @@ import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.util.Objects
 
 @Entity
 @Table(name = "t_order_request")
@@ -63,7 +64,19 @@ class OrderRequest(
         var orderRequestId: Long?,
         @Column(name = "order_item_id")
         var orderItemId: Long?
-    ): Serializable
+    ): Serializable {
+        override fun equals(other: Any?): Boolean {
+            if (other !is OrderRequestAndOrderItemId) {
+                return false
+            }
+
+            return other.orderRequestId == orderRequestId && other.orderItemId == orderItemId
+        }
+
+        override fun hashCode(): Int {
+            return Objects.hash(orderRequestId, orderItemId)
+        }
+    }
 
     @Entity
     @Table(
