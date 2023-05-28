@@ -1,13 +1,13 @@
 package com.dogsteven.anhcop.configurations.database
 
-import com.dogsteven.anhcop.entities.*
+import com.dogsteven.anhcop.entities.User
+import com.dogsteven.anhcop.entities.Vendor
 import com.dogsteven.anhcop.repositories.*
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.time.LocalDateTime
 
 @Configuration
 class DatabaseConfiguration {
@@ -41,27 +41,6 @@ class DatabaseConfiguration {
                 phone = "0123456789",
                 workingVendor = mainVendor
             ).apply(userRepository::save)
-        }
-
-        if (productRepository.findByName("Cơm tấm") == null) {
-            Product(
-                name = "Cơm tấm",
-                prices = setOf(10, 15, 20)
-            ).apply(productRepository::save)
-        }
-
-        if (productRepository.findByName("Hủ tiếu") == null) {
-            Product(
-                name = "Hủ tiếu",
-                prices = setOf(15, 20, 25)
-            ).apply(productRepository::save)
-        }
-
-        if (productRepository.findByName("Mì quảng") == null) {
-            Product(
-                name = "Mì quảng",
-                prices = setOf(15, 20, 25)
-            ).apply(productRepository::save)
         }
     }
 }

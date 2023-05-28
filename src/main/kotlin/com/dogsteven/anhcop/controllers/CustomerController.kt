@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/customer")
 class CustomerController(
-    private val customerService: CustomerService
+    private val customerService: CustomerService,
 ) {
     @PostMapping("/register")
     @ResponseBody
-    fun register(@RequestBody command: CustomerCommand.Register): CustomerCommand.Register.Response {
+    fun register(
+        @RequestBody command: CustomerCommand.Register
+    ): CustomerCommand.Register.Response {
         return customerService.execute(command)
     }
 }

@@ -4,6 +4,8 @@ import com.dogsteven.anhcop.entities.User
 import com.dogsteven.anhcop.repositories.EmployeeRepository
 import com.dogsteven.anhcop.repositories.UserRepository
 import com.dogsteven.anhcop.repositories.VendorRepository
+import com.dogsteven.anhcop.utils.ValidatorExtension.Companion.throwValidate
+import jakarta.validation.Validator
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -13,9 +15,12 @@ import org.springframework.web.server.ResponseStatusException
 class EmployeeServiceImpl(
     private val vendorRepository: VendorRepository,
     private val userRepository: UserRepository,
-    private val employeeRepository: EmployeeRepository
+    private val employeeRepository: EmployeeRepository,
+    private val validator: Validator
 ): EmployeeService {
     override fun execute(command: EmployeeCommand.CreateEmployee): EmployeeCommand.CreateEmployee.Response {
+        validator.throwValidate(command)
+
         if (userRepository.findByUsername(command.username) != null) {
             throw ResponseStatusException(
                 HttpStatus.INTERNAL_SERVER_ERROR,

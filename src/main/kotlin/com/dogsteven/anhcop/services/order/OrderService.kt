@@ -5,8 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 interface OrderService {
     fun execute(command: OrderCommand.StreamOrders): OrderCommand.StreamOrders.Response
 
-    fun execute(command: OrderCommand.StreamOrdersFrom): OrderCommand.StreamOrdersFrom.Response
-
     @Transactional
     fun execute(command: OrderCommand.CreateOrder): OrderCommand.CreateOrder.Response
 

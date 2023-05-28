@@ -3,15 +3,16 @@ package com.dogsteven.anhcop.services.order
 import com.dogsteven.anhcop.entities.Order
 import com.dogsteven.anhcop.entities.OrderItem
 import com.dogsteven.anhcop.entities.User
-import com.dogsteven.anhcop.repositories.*
+import com.dogsteven.anhcop.repositories.OrderItemRepository
+import com.dogsteven.anhcop.repositories.OrderRepository
+import com.dogsteven.anhcop.repositories.ProductRepository
 import com.dogsteven.anhcop.services.order.order_channel.OrderChannel
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.codec.ServerSentEvent
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import reactor.core.publisher.Flux
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Service
 class OrderServiceImpl(
@@ -21,7 +22,7 @@ class OrderServiceImpl(
     private val orderChannel: OrderChannel
 ): OrderService {
     override fun execute(command: OrderCommand.StreamOrders): OrderCommand.StreamOrders.Response {
-        val streaming = orderChannel.flux
+        val streaming = orderChannel.flux()
 
         return OrderCommand.StreamOrders.Response(
             flux = streaming.map { order ->
@@ -34,27 +35,8 @@ class OrderServiceImpl(
         )
     }
 
-    override fun execute(command: OrderCommand.StreamOrdersFrom): OrderCommand.StreamOrdersFrom.Response {
-        val saved = orderRepository.findAllByCreatedDateTimeAfter(command.dateTime)
-            .stream()
-            .run { Flux.fromStream(this) }
-            .map(Order::model)
-
-        val streaming = orderChannel.flux
-
-        return OrderCommand.StreamOrdersFrom.Response(
-            flux = Flux.concat(saved, streaming).map { order ->
-                ServerSentEvent.builder<Order.Model>()
-                    .id(order.id.toString())
-                    .event("order-committed")
-                    .data(order)
-                    .build()
-            }
-        )
-    }
-
     override fun execute(command: OrderCommand.CreateOrder): OrderCommand.CreateOrder.Response {
-        val createdDateTime = LocalDateTime.now()
+        val createdDateTime = OffsetDateTime.now()
 
         val createdUser = (command.principal.user as? User.Employee)
             ?: throw ResponseStatusException(
@@ -104,12 +86,11 @@ class OrderServiceImpl(
 
     override fun execute(command: OrderCommand.DeleteOrdersBetween): OrderCommand.DeleteOrdersBetween.Response {
         val orders = orderRepository.findAllByCreatedDateTimeBetween(
-            startDateTime = command.startDate.atTime(0, 0, 0),
-            endDateTime = command.endDate.atTime(0, 0, 0)
+            startDateTime = command.startDateTime,
+            endDateTime = command.endDateTime
         )
 
         for (order in orders) {
-            orderItemRepository.deleteAll(order.items)
             orderRepository.delete(order)
         }
 

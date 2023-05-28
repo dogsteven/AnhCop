@@ -3,16 +3,15 @@ package com.dogsteven.anhcop.configurations.security.token_services
 import com.dogsteven.anhcop.entities.User
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.time.Instant
-import java.util.Date
+import java.util.*
 
 @Service
 @Qualifier("JWTService")
 class JWTService: TokenService {
-    private val secret: String = "this is anhcop secret"
+    private val secret: ByteArray = Base64.getEncoder().encode("this is anhcop secret".toByteArray())
     private val audience: String = "anhcop"
     private val issuer: String = "anhcop-auth"
     private val activeDurationInHours: Long = 6L

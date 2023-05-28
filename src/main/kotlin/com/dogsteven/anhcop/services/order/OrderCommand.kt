@@ -5,20 +5,10 @@ import com.dogsteven.anhcop.entities.OrderItem
 import com.dogsteven.anhcop.entities.User
 import org.springframework.http.codec.ServerSentEvent
 import reactor.core.publisher.Flux
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.OffsetDateTime
 
 object OrderCommand {
     object StreamOrders {
-        class Response(
-            val flux: Flux<ServerSentEvent<Order.Model>>
-        )
-    }
-
-    class StreamOrdersFrom(
-        val dateTime: LocalDateTime
-    ) {
         class Response(
             val flux: Flux<ServerSentEvent<Order.Model>>
         )
@@ -36,8 +26,8 @@ object OrderCommand {
     }
 
     class DeleteOrdersBetween(
-        val startDate: LocalDate,
-        val endDate: LocalDate
+        val startDateTime: OffsetDateTime,
+        val endDateTime: OffsetDateTime
     ) {
         object Response
     }

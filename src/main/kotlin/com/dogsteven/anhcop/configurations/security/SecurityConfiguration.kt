@@ -1,13 +1,11 @@
 package com.dogsteven.anhcop.configurations.security
 
 import com.dogsteven.anhcop.configurations.security.filters.BearerAuthenticationFilter
-import com.dogsteven.anhcop.configurations.security.filters.JWTAuthenticationFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationProvider
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

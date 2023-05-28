@@ -10,16 +10,4 @@ object AuthenticationCommand {
             val token: String
         )
     }
-
-    class EnableUser(
-        val id: Long
-    ) {
-        object Response
-    }
-
-    class DisableUser(
-        val id: Long
-    ) {
-        object Response
-    }
 }

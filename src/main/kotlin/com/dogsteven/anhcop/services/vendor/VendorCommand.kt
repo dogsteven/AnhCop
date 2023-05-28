@@ -1,6 +1,8 @@
 package com.dogsteven.anhcop.services.vendor
 
 import com.dogsteven.anhcop.entities.Vendor
+import com.dogsteven.anhcop.utils.NullOrNotBlank
+import jakarta.validation.constraints.NotBlank
 
 object VendorCommand {
     object GetAllVendors {
@@ -10,6 +12,7 @@ object VendorCommand {
     }
 
     class CreateVendor(
+        @field:NotBlank(message = "Name must not be blank")
         val name: String
     ) {
         class Response(
@@ -19,6 +22,7 @@ object VendorCommand {
 
     class UpdateVendor(
         val id: Long,
+        @field:NullOrNotBlank(message = "Name must not be blank")
         val name: String?
     ) {
         object Response

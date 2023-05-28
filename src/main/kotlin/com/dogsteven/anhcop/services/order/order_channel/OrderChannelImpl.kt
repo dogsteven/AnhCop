@@ -8,20 +8,15 @@ import reactor.core.publisher.Sinks
 
 @Component
 class OrderChannelImpl: OrderChannel {
-    private val sink = Sinks
+    private val sink: Sinks.Many<Order.Model> = Sinks
         .many()
         .multicast()
-        .directAllOrNothing<Order.Model>()
+        .onBackpressureBuffer()
 
-    override val flux: Flux<Order.Model>
-        get() = sink.asFlux()
+    override fun flux(): Flux<Order.Model> = sink.asFlux()
 
     @Async
     override fun broadcast(order: Order.Model) {
-        val emitResult = sink.tryEmitNext(order)
-
-        if (emitResult == Sinks.EmitResult.FAIL_OVERFLOW) {
-            broadcast(order)
-        }
+        sink.tryEmitNext(order)
     }
 }

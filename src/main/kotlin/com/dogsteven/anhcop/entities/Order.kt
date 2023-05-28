@@ -4,29 +4,24 @@ import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import java.io.Serializable
-import java.time.LocalDateTime
-import java.util.Objects
+import java.time.OffsetDateTime
+import java.util.*
 
 @Entity
-@Table(
-    name = "t_order",
-    indexes = [
-        Index(columnList = "created_vendor_id")
-    ]
-)
+@Table(name = "t_order")
 class Order(
     @Id
     @GeneratedValue
     var id: Long? = null,
     @Column(name = "created_date_time")
-    var createdDateTime: LocalDateTime,
+    var createdDateTime: OffsetDateTime,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_user_id")
     var createdUser: User,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_vendor_id")
     var createdVendor: Vendor,
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var orderAndOrderItems: List<OrderAndOrderItem> = listOf()
 ) {
     val items: List<OrderItem>
@@ -54,7 +49,7 @@ class Order(
 
     class Model(
         val id: Long,
-        val createdDateTime: LocalDateTime,
+        val createdDateTime: OffsetDateTime,
         val createdUserId: Long,
         val createdVendorId: Long,
         val items: List<OrderItem.Model>
@@ -88,11 +83,9 @@ class Order(
         ]
     )
     class OrderAndOrderItem(
-        @OnDelete(action = OnDeleteAction.CASCADE)
         @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
         @MapsId("orderId")
         var order: Order,
-        @OnDelete(action = OnDeleteAction.CASCADE)
         @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
         @MapsId("orderItemId")
         var orderItem: OrderItem

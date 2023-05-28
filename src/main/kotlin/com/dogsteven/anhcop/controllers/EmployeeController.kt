@@ -3,9 +3,7 @@ package com.dogsteven.anhcop.controllers
 import com.dogsteven.anhcop.services.employee.EmployeeCommand
 import com.dogsteven.anhcop.services.employee.EmployeeService
 import org.springframework.security.access.annotation.Secured
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 @RestController
 @RequestMapping("/api/employee")

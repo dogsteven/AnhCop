@@ -1,12 +1,6 @@
 package com.dogsteven.anhcop.entities
 
-import jakarta.persistence.Column
-import jakarta.persistence.ElementCollection
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import jakarta.persistence.Transient
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "t_product")

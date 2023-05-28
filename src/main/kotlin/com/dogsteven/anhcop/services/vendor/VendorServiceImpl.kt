@@ -3,6 +3,8 @@ package com.dogsteven.anhcop.services.vendor
 import com.dogsteven.anhcop.entities.Vendor
 import com.dogsteven.anhcop.repositories.EmployeeRepository
 import com.dogsteven.anhcop.repositories.VendorRepository
+import jakarta.validation.ConstraintViolationException
+import jakarta.validation.Validator
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -11,7 +13,8 @@ import org.springframework.web.server.ResponseStatusException
 @Service
 class VendorServiceImpl(
     private val vendorRepository: VendorRepository,
-    private val employeeRepository: EmployeeRepository
+    private val employeeRepository: EmployeeRepository,
+    private val validator: Validator
 ): VendorService {
     override fun execute(command: VendorCommand.GetAllVendors): VendorCommand.GetAllVendors.Response {
         val vendors = vendorRepository.findAll().map(Vendor::model)
@@ -22,6 +25,12 @@ class VendorServiceImpl(
     }
 
     override fun execute(command: VendorCommand.CreateVendor): VendorCommand.CreateVendor.Response {
+        val violations = validator.validate(command)
+
+        if (violations.isNotEmpty()) {
+            throw ConstraintViolationException(violations)
+        }
+
         if (vendorRepository.findByName(command.name) != null) {
             throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
@@ -39,6 +48,12 @@ class VendorServiceImpl(
     }
 
     override fun execute(command: VendorCommand.UpdateVendor): VendorCommand.UpdateVendor.Response {
+        val violations = validator.validate(command)
+
+        if (violations.isNotEmpty()) {
+            throw ConstraintViolationException(violations)
+        }
+
         val vendor = vendorRepository.findByIdOrNull(command.id)
             ?: throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,

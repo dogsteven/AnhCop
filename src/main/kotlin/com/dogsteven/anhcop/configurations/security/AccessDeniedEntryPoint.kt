@@ -13,6 +13,5 @@ class AccessDeniedEntryPoint: AccessDeniedHandler {
             HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
             accessDeniedException.message
         )
-
     }
 }
