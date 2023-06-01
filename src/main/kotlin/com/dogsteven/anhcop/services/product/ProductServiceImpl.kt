@@ -2,22 +2,24 @@ package com.dogsteven.anhcop.services.product
 
 import com.dogsteven.anhcop.entities.Product
 import com.dogsteven.anhcop.repositories.ProductRepository
-import com.dogsteven.anhcop.services.image.ImageCommand
-import com.dogsteven.anhcop.services.image.ImageService
+import com.dogsteven.anhcop.utils.BufferedImageUtils.Companion.centerCrop
+import com.dogsteven.anhcop.utils.BufferedImageUtils.Companion.scaleTo
+import com.dogsteven.anhcop.utils.BufferedImageUtils.Companion.toByteArray
 import com.dogsteven.anhcop.utils.ValidatorExtension.Companion.throwValidate
 import jakarta.validation.Validator
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import javax.imageio.ImageIO
 
 @Service
 class ProductServiceImpl(
     private val productRepository: ProductRepository,
-    private val validator: Validator,
-    private val imageService: ImageService
+    private val validator: Validator
 ): ProductService {
     override fun execute(command: ProductCommand.GetAllProducts): ProductCommand.GetAllProducts.Response {
+
         val products = productRepository.findAll().map(Product::model)
 
         return ProductCommand.GetAllProducts.Response(
@@ -25,15 +27,15 @@ class ProductServiceImpl(
         )
     }
 
-    override fun execute(command: ProductCommand.GetProductById): ProductCommand.GetProductById.Response {
-        val product = productRepository.findByIdOrNull(command.id)?.let(Product::model)
+    override fun execute(command: ProductCommand.GetProductImageById): ProductCommand.GetProductImageById.Response {
+        val product = productRepository.findByIdOrNull(command.id)
             ?: throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Product with id \"${command.id}\" does not exist"
             )
 
-        return ProductCommand.GetProductById.Response(
-            product = product
+        return ProductCommand.GetProductImageById.Response(
+            stream = product.image.inputStream()
         )
     }
 
@@ -50,19 +52,16 @@ class ProductServiceImpl(
 
         val product = Product(
             name = metadata.name,
-            prices = metadata.prices
+            prices = metadata.prices,
+            image = ImageIO.read(command.image)
+                .centerCrop()
+                .scaleTo(300, 300)
+                .toByteArray()
         ).let(productRepository::save)
 
         return ProductCommand.CreateProduct.Response(
             id = product.id!!
-        ).apply {
-            imageService.execute(
-                ImageCommand.Store(
-                    fileName = "product-$id.png",
-                    fileStream = command.image
-                )
-            )
-        }
+        )
     }
 
     override fun execute(command: ProductCommand.UpdateProduct): ProductCommand.UpdateProduct.Response {
@@ -94,19 +93,17 @@ class ProductServiceImpl(
         productRepository.save(product)
 
         if (command.image != null) {
-            imageService.execute(
-                ImageCommand.Store(
-                    fileName = "product-${metadata.id}.png",
-                    fileStream = command.image
-                )
-            )
+            product.image = ImageIO.read(command.image)
+                .centerCrop()
+                .scaleTo(300, 300)
+                .toByteArray()
         }
 
         return ProductCommand.UpdateProduct.Response
     }
 
     override fun execute(command: ProductCommand.DeleteProduct): ProductCommand.DeleteProduct.Response {
-        if (productRepository.findByIdOrNull(command.id) == null) {
+        if (!productRepository.existsById(command.id)) {
             throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Product with id \"${command.id}\" does not exist"
@@ -114,12 +111,6 @@ class ProductServiceImpl(
         }
 
         productRepository.deleteById(command.id)
-
-        imageService.execute(
-            ImageCommand.Remove(
-                fileName = "product-${command.id}.png"
-            )
-        )
 
         return ProductCommand.DeleteProduct.Response
     }

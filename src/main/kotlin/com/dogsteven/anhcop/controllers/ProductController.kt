@@ -1,7 +1,5 @@
 package com.dogsteven.anhcop.controllers
 
-import com.dogsteven.anhcop.services.image.ImageCommand
-import com.dogsteven.anhcop.services.image.ImageService
 import com.dogsteven.anhcop.services.product.ProductCommand
 import com.dogsteven.anhcop.services.product.ProductService
 import org.springframework.core.io.InputStreamResource
@@ -16,8 +14,7 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("/api/product")
 class ProductController(
-    private val productService: ProductService,
-    private val imageService: ImageService
+    private val productService: ProductService
 ) {
     @GetMapping
     @ResponseBody
@@ -27,19 +24,11 @@ class ProductController(
         return productService.execute(command)
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    fun getProductById(@PathVariable("id") id: Long): ProductCommand.GetProductById.Response {
-        val command = ProductCommand.GetProductById(id)
-
-        return productService.execute(command)
-    }
-
     @GetMapping("/{id}/image", produces = [MediaType.IMAGE_PNG_VALUE])
     fun streamProductImage(@PathVariable("id") id: Long): ResponseEntity<Resource> {
-        val command = ImageCommand.Load("product-$id.png")
-        val fileStream = imageService.execute(command).fileStream
-        val resource = InputStreamResource(fileStream)
+        val command = ProductCommand.GetProductImageById(id)
+        val stream = productService.execute(command).stream
+        val resource = InputStreamResource(stream)
         return ResponseEntity.ofNullable(resource)
     }
 
@@ -77,7 +66,6 @@ class ProductController(
     @Transactional
     fun deleteProduct(@PathVariable("id") id: Long): ProductCommand.DeleteProduct.Response {
         val command = ProductCommand.DeleteProduct(id)
-        imageService.execute(ImageCommand.Remove("product-$id.png"))
         return productService.execute(command)
     }
 }

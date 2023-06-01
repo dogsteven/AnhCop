@@ -14,11 +14,11 @@ object ProductCommand {
         )
     }
 
-    class GetProductById(
+    class GetProductImageById(
         val id: Long
     ) {
         class Response(
-            val product: Product.Model
+            val stream: InputStream
         )
     }
 

@@ -11,7 +11,9 @@ class Product(
     @Column(unique = true)
     var name: String,
     @ElementCollection
-    var prices: Set<Int>
+    var prices: Set<Int>,
+    @Lob
+    var image: ByteArray
 ) {
     val model: Model
         @Transient
