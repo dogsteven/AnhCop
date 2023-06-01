@@ -25,6 +25,18 @@ class ProductServiceImpl(
         )
     }
 
+    override fun execute(command: ProductCommand.GetProductById): ProductCommand.GetProductById.Response {
+        val product = productRepository.findByIdOrNull(command.id)?.let(Product::model)
+            ?: throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Product with id \"${command.id}\" does not exist"
+            )
+
+        return ProductCommand.GetProductById.Response(
+            product = product
+        )
+    }
+
     override fun execute(command: ProductCommand.CreateProduct): ProductCommand.CreateProduct.Response {
         val metadata = command.metadata
         validator.throwValidate(metadata)

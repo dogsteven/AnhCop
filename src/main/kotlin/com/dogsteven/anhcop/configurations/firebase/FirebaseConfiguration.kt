@@ -1,27 +1,24 @@
 package com.dogsteven.anhcop.configurations.firebase
 
+import com.dogsteven.anhcop.configurations.anhcop.AnhCopProperties
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.messaging.FirebaseMessaging
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import kotlin.io.path.Path
 import kotlin.io.path.inputStream
 
 @Configuration
-class FirebaseConfiguration(
-    private val firebaseProperties: FirebaseProperties
-) {
-
+class FirebaseConfiguration {
     @Bean
-    fun googleCredentials(): GoogleCredentials {
-        return if (firebaseProperties.googleCredentials != null) {
-            val inputStream = Path(firebaseProperties.googleCredentials!!).inputStream()
-            GoogleCredentials.fromStream(inputStream)
-        } else {
-            GoogleCredentials.getApplicationDefault()
-        }
+    fun googleCredentials(
+        anhCopProperties: AnhCopProperties
+    ): GoogleCredentials {
+        val inputStream = Path(anhCopProperties.firebase.googleCredentials).inputStream()
+        return GoogleCredentials.fromStream(inputStream)
     }
 
     @Bean

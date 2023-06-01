@@ -14,6 +14,14 @@ object ProductCommand {
         )
     }
 
+    class GetProductById(
+        val id: Long
+    ) {
+        class Response(
+            val product: Product.Model
+        )
+    }
+
     class CreateProduct(
         val metadata: Metadata,
         val image: InputStream

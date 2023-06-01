@@ -7,6 +7,9 @@ interface ProductService {
     fun execute(command: ProductCommand.GetAllProducts): ProductCommand.GetAllProducts.Response
 
     @Transactional
+    fun execute(command: ProductCommand.GetProductById): ProductCommand.GetProductById.Response
+
+    @Transactional
     fun execute(command: ProductCommand.CreateProduct): ProductCommand.CreateProduct.Response
 
     @Transactional

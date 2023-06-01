@@ -1,19 +1,24 @@
 package com.dogsteven.anhcop.configurations.security.token_services
 
+import com.dogsteven.anhcop.configurations.anhcop.AnhCopProperties
 import com.dogsteven.anhcop.entities.User
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
 
 @Service
 @Qualifier("JWTService")
-class JWTService: TokenService {
-    private val secret: ByteArray = Base64.getEncoder().encode("this is anhcop secret".toByteArray())
-    private val audience: String = "anhcop"
-    private val issuer: String = "anhcop-auth"
+class JWTService(
+    anhCopProperties: AnhCopProperties
+): TokenService {
+    private val audience = anhCopProperties.jwt.audience
+    private val issuer = anhCopProperties.jwt.issuer
+    private val secret = anhCopProperties.jwt.secretKey
+
     private val activeDurationInHours: Long = 6L
 
     override fun generateAccessToken(principal: User.Principal): String {

@@ -19,20 +19,28 @@ class ProductController(
     private val productService: ProductService,
     private val imageService: ImageService
 ) {
-    @GetMapping("/image/{id}", produces = [MediaType.IMAGE_PNG_VALUE])
-    fun streamProductImage(@PathVariable("id") id: Long): ResponseEntity<Resource> {
-        val command = ImageCommand.Load("product-$id.png")
-        val fileStream = imageService.execute(command).fileStream
-        val resource = InputStreamResource(fileStream)
-        return ResponseEntity.ofNullable(resource)
-    }
-
     @GetMapping
     @ResponseBody
     fun getAllProducts(): ProductCommand.GetAllProducts.Response {
         val command = ProductCommand.GetAllProducts
 
         return productService.execute(command)
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    fun getProductById(@PathVariable("id") id: Long): ProductCommand.GetProductById.Response {
+        val command = ProductCommand.GetProductById(id)
+
+        return productService.execute(command)
+    }
+
+    @GetMapping("/{id}/image", produces = [MediaType.IMAGE_PNG_VALUE])
+    fun streamProductImage(@PathVariable("id") id: Long): ResponseEntity<Resource> {
+        val command = ImageCommand.Load("product-$id.png")
+        val fileStream = imageService.execute(command).fileStream
+        val resource = InputStreamResource(fileStream)
+        return ResponseEntity.ofNullable(resource)
     }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
