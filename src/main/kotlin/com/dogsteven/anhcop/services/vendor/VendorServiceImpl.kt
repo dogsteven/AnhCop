@@ -31,7 +31,7 @@ class VendorServiceImpl(
             throw ConstraintViolationException(violations)
         }
 
-        if (vendorRepository.findByName(command.name) != null) {
+        if (vendorRepository.existsByName(command.name)) {
             throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Vendor with name \"${command.name}\" already exists"
@@ -61,6 +61,12 @@ class VendorServiceImpl(
             )
 
         if (command.name != null) {
+            if (vendorRepository.existsByName(command.name)) {
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Vendor with name \"${command.name}\" already exists"
+                )
+            }
             vendor.name = command.name
         }
 

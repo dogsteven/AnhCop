@@ -21,7 +21,7 @@ class EmployeeServiceImpl(
     override fun execute(command: EmployeeCommand.CreateEmployee): EmployeeCommand.CreateEmployee.Response {
         validator.throwValidate(command)
 
-        if (userRepository.findByUsername(command.username) != null) {
+        if (userRepository.existsByUsername(command.name)) {
             throw ResponseStatusException(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "User with username \"${command.username}\" already exists"

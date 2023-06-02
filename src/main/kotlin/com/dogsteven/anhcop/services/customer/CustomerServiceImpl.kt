@@ -18,7 +18,7 @@ class CustomerServiceImpl(
     override fun execute(command: CustomerCommand.Register): CustomerCommand.Register.Response {
         validator.throwValidate(command)
 
-        if (userRepository.findByUsername(command.username) != null) {
+        if (userRepository.existsByUsername(command.name)) {
             throw ResponseStatusException(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "User with username \"${command.username}\" already exists"

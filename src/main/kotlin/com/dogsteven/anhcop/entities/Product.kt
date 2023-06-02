@@ -12,6 +12,7 @@ class Product(
     var name: String,
     @ElementCollection
     var prices: Set<Int>,
+    @field:Basic(fetch = FetchType.LAZY, optional = false)
     @Lob
     var image: ByteArray
 ) {

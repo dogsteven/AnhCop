@@ -26,7 +26,7 @@ class JWTService(
         val issuedAt = Date.from(nowInstant)
         val expiredAt = Date.from(nowInstant.plusSeconds(activeDurationInHours * 3600L))
 
-        return Jwts.builder()
+        return "JWT:" + Jwts.builder()
             .setAudience(audience)
             .setIssuer(issuer)
             .setIssuedAt(issuedAt)
@@ -43,7 +43,7 @@ class JWTService(
                 .setSigningKey(secret)
                 .requireAudience(audience)
                 .requireIssuer(issuer)
-                .parseClaimsJws(token)
+                .parseClaimsJws(token.substring(startIndex = 4))
                 .body.subject.toLong()
         } catch (_: Throwable) {
             null

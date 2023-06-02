@@ -5,6 +5,7 @@ import com.dogsteven.anhcop.entities.OrderItem
 import com.dogsteven.anhcop.entities.User
 import org.springframework.http.codec.ServerSentEvent
 import reactor.core.publisher.Flux
+import java.time.Instant
 import java.time.OffsetDateTime
 
 object OrderCommand {
@@ -26,8 +27,8 @@ object OrderCommand {
     }
 
     class DeleteOrdersBetween(
-        val startDateTime: OffsetDateTime,
-        val endDateTime: OffsetDateTime
+        val startDateTime: Instant,
+        val endDateTime: Instant
     ) {
         object Response
     }

@@ -7,6 +7,7 @@ import com.dogsteven.anhcop.utils.BufferedImageUtils.Companion.scaleTo
 import com.dogsteven.anhcop.utils.BufferedImageUtils.Companion.toByteArray
 import com.dogsteven.anhcop.utils.ValidatorExtension.Companion.throwValidate
 import jakarta.validation.Validator
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -19,7 +20,6 @@ class ProductServiceImpl(
     private val validator: Validator
 ): ProductService {
     override fun execute(command: ProductCommand.GetAllProducts): ProductCommand.GetAllProducts.Response {
-
         val products = productRepository.findAll().map(Product::model)
 
         return ProductCommand.GetAllProducts.Response(
@@ -28,14 +28,14 @@ class ProductServiceImpl(
     }
 
     override fun execute(command: ProductCommand.GetProductImageById): ProductCommand.GetProductImageById.Response {
-        val product = productRepository.findByIdOrNull(command.id)
+        val image = productRepository.getProductImageById(command.id)
             ?: throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Product with id \"${command.id}\" does not exist"
             )
 
         return ProductCommand.GetProductImageById.Response(
-            stream = product.image.inputStream()
+            stream = image.inputStream()
         )
     }
 
@@ -43,7 +43,7 @@ class ProductServiceImpl(
         val metadata = command.metadata
         validator.throwValidate(metadata)
 
-        if (productRepository.findByName(metadata.name) != null) {
+        if (productRepository.existsByName(metadata.name)) {
             throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Product with name \"${metadata.name}\" already exists"
@@ -76,7 +76,7 @@ class ProductServiceImpl(
             )
 
         if (metadata.name != null) {
-            if (productRepository.findByName(metadata.name) != null) {
+            if (productRepository.existsByName(metadata.name)) {
                 throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Product with name \"${metadata.name}\" already exists"

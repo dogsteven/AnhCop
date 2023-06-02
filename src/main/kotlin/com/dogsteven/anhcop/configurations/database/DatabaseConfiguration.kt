@@ -22,7 +22,7 @@ class DatabaseConfiguration {
         orderItemRepository: OrderItemRepository,
         passwordEncoder: PasswordEncoder
     ): CommandLineRunner = CommandLineRunner { _ ->
-        if (userRepository.findByUsername("administrator") == null) {
+        if (!userRepository.existsByUsername("administrator")) {
             User.Administrator(
                 username = "administrator",
                 password = "admin123admin".let(passwordEncoder::encode),
@@ -30,7 +30,7 @@ class DatabaseConfiguration {
             ).apply(userRepository::save)
         }
 
-        if (userRepository.findByUsername("employee1") == null) {
+        if (!userRepository.existsByUsername("employee1")) {
             val mainVendor = vendorRepository.findByName("Chi nhánh chính, thôn Tân Thành")
                 ?: Vendor(name = "Chi nhánh chính, thôn Tân Thành").let(vendorRepository::save)
 

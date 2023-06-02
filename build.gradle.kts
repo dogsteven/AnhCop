@@ -6,6 +6,8 @@ plugins {
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
+
+    id("org.hibernate.orm") version "6.1.7.Final"
 }
 
 group = "com.dogsteven"
@@ -20,6 +22,15 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+hibernate {
+    enhancement {
+        lazyInitialization(true)
+        dirtyTracking(true)
+        associationManagement(true)
+        extendedEnhancement(false)
+    }
 }
 
 dependencies {

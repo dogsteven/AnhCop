@@ -10,4 +10,8 @@ import org.springframework.stereotype.Component
 class JWTAuthenticationFilter(
     userPrincipalProvider: UserPrincipalProvider,
     @Qualifier("JWTService") jwtService: TokenService
-): BearerAuthenticationFilter(userPrincipalProvider, jwtService)
+): BearerAuthenticationFilter(userPrincipalProvider, jwtService) {
+    override fun shouldProcess(token: String): Boolean {
+        return token.startsWith("JWT:")
+    }
+}

@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Flux
+import java.time.Instant
 import java.time.OffsetDateTime
 
 @RestController
@@ -46,8 +47,8 @@ class OrderController(
     @ResponseBody
     @Secured("ROLE_ADMINISTRATOR")
     fun deleteOrdersBetween(
-        @PathVariable("startDateTime") startDateTime: OffsetDateTime,
-        @PathVariable("endDateTime") endDateTime: OffsetDateTime
+        @PathVariable("startDateTime") startDateTime: Instant,
+        @PathVariable("endDateTime") endDateTime: Instant
     ): OrderCommand.DeleteOrdersBetween.Response {
         val command = OrderCommand.DeleteOrdersBetween(startDateTime, endDateTime)
 

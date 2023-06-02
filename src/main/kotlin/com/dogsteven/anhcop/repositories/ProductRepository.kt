@@ -7,5 +7,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProductRepository: JpaRepository<Product, Long> {
-    fun findByName(name: String): Product?
+    @Query("select p.image from Product p where p.id = :id")
+    fun getProductImageById(id: Long): ByteArray?
+
+    fun existsByName(name: String): Boolean
 }
