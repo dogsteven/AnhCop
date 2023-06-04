@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.dogsteven"
-version = "0.0.1-SNAPSHOT"
+version = "production"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {

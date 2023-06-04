@@ -11,8 +11,8 @@ class Order(
     @Id
     @GeneratedValue
     var id: Long? = null,
-    @Column(name = "created_date_time")
-    var createdDateTime: Instant,
+    @Column(name = "created_moment")
+    var createdMoment: Instant,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_user_id")
     var createdUser: User,
@@ -39,7 +39,7 @@ class Order(
         @Transient
         get() = Model(
             id = id ?: throw RuntimeException("Field 'Order::id' is null"),
-            createdDateTime = createdDateTime,
+            createdMoment = createdMoment,
             createdUserId = createdUser.id ?: throw RuntimeException("Field 'Order::createdUser::id' is null"),
             createdVendorId = createdVendor.id ?: throw RuntimeException("Field 'Order::createdVendor::id' is null"),
             items = items.map(OrderItem::model)
@@ -47,7 +47,7 @@ class Order(
 
     class Model(
         val id: Long,
-        val createdDateTime: Instant,
+        val createdMoment: Instant,
         val createdUserId: Long,
         val createdVendorId: Long,
         val items: List<OrderItem.Model>

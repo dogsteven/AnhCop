@@ -27,8 +27,8 @@ object OrderCommand {
     }
 
     class DeleteOrdersBetween(
-        val startDateTime: Instant,
-        val endDateTime: Instant
+        val startMoment: Instant,
+        val endMoment: Instant
     ) {
         object Response
     }

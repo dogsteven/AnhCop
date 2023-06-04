@@ -43,14 +43,14 @@ class OrderController(
         return orderService.execute(command)
     }
 
-    @DeleteMapping("/{startDateTime}/{endDateTime}")
+    @DeleteMapping("/{startMoment}/{endMoment}")
     @ResponseBody
     @Secured("ROLE_ADMINISTRATOR")
     fun deleteOrdersBetween(
-        @PathVariable("startDateTime") startDateTime: Instant,
-        @PathVariable("endDateTime") endDateTime: Instant
+        @PathVariable("startMoment") startMoment: Instant,
+        @PathVariable("endMoment") endMoment: Instant
     ): OrderCommand.DeleteOrdersBetween.Response {
-        val command = OrderCommand.DeleteOrdersBetween(startDateTime, endDateTime)
+        val command = OrderCommand.DeleteOrdersBetween(startMoment, endMoment)
 
         return orderService.execute(command)
     }

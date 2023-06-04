@@ -37,8 +37,6 @@ class OrderServiceImpl(
     }
 
     override fun execute(command: OrderCommand.CreateOrder): OrderCommand.CreateOrder.Response {
-        val createdDateTime = Instant.now()
-
         val createdUser = (command.principal.user as? User.Employee)
             ?: throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
@@ -51,8 +49,10 @@ class OrderServiceImpl(
                 "You have not worked at any vendor yet"
             )
 
+        val createdMoment = Instant.now()
+
         val order = Order(
-            createdDateTime = createdDateTime,
+            createdMoment = createdMoment,
             createdUser = createdUser,
             createdVendor = createdVendor
         ).let(orderRepository::save).apply {
@@ -86,9 +86,9 @@ class OrderServiceImpl(
     }
 
     override fun execute(command: OrderCommand.DeleteOrdersBetween): OrderCommand.DeleteOrdersBetween.Response {
-        val orders = orderRepository.findAllByCreatedDateTimeBetween(
-            startDateTime = command.startDateTime,
-            endDateTime = command.endDateTime
+        val orders = orderRepository.findAllByCreatedMomentBetween(
+            startMoment = command.startMoment,
+            endMoment = command.endMoment
         )
 
         for (order in orders) {

@@ -8,5 +8,5 @@ import java.time.OffsetDateTime
 
 @Repository
 interface OrderRepository: JpaRepository<Order, Long> {
-    fun findAllByCreatedDateTimeBetween(startDateTime: Instant, endDateTime: Instant): Collection<Order>
+    fun findAllByCreatedMomentBetween(startMoment: Instant, endMoment: Instant): Collection<Order>
 }

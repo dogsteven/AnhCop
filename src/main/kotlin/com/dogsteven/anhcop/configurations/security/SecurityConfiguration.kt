@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -65,11 +66,20 @@ class SecurityConfiguration {
             .authenticationEntryPoint(authenticationEntryPoint)
             .accessDeniedHandler(accessDeniedEntryPoint)
             .and()
-            .securityMatcher("/authentication/authenticate", "/api/customer/register", "/api/product/*/image", "/api/test/**")
+            .securityMatcher(
+                "/authentication/authenticate",
+                "/api/customer/register",
+                "/api/product/*/image",
+                "/api/test/**"
+            )
             .authorizeHttpRequests()
             .requestMatchers("/authentication/authenticate")
             .authenticated()
-            .requestMatchers("/api/customer/register", "/api/product/*/image", "/api/test/**")
+            .requestMatchers(
+                "/api/customer/register",
+                "/api/product/*/image",
+                "/api/test/**"
+            )
             .permitAll()
             .and()
             .httpBasic()

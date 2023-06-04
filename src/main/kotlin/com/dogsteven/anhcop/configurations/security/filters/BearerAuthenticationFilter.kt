@@ -15,7 +15,7 @@ abstract class BearerAuthenticationFilter(
     private val userPrincipalProvider: UserPrincipalProvider,
     private val tokenService: TokenService
 ): OncePerRequestFilter() {
-    abstract fun shouldProcess(token: String): Boolean
+    open fun shouldProcess(token: String): Boolean = true
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         if (SecurityContextHolder.getContext().authentication != null) {
