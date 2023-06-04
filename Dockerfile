@@ -9,7 +9,7 @@ EXPOSE 8080
 
 
 COPY --from=build /build/libs/AnhCop-production.jar app.jar
-COPY /firebase-service-account.json firebase-service-account.json
+COPY ./firebase-service-account.json firebase-service-account.json
 
 ENV PG_HOST ep-still-wood-995647.ap-southeast-1.aws.neon.tech
 ENV PG_DATABASE neondb
