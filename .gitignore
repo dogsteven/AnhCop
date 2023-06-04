@@ -36,8 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-**/firebase-service-account.json
-
 .DS_Store
 **/.DS_Store
 /resource/
